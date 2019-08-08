@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -35,7 +34,7 @@ public class MainV1 {
     private int width, height;
     private VarColor[][] colorPane;
     private Set<VarColor> usedColors;
-    private List<Neighbor> neighbors = new LinkedList<>();
+    private List<Neighbor> neighbors = new ArrayList<>();
     private Random r;
 
     public MainV1(int width, int height) {
@@ -84,7 +83,7 @@ public class MainV1 {
             if (numIters % 1000 == 0) {
                 System.out.printf("\rIter: % 7d, placed: % 6d", numIters, placed);
             }
-            Neighbor n = neighbors.remove(0);
+            Neighbor n = neighbors.remove(neighbors.size() - 1);
             if (visitedTile(n.getRow(), n.getCol())) {
                 System.err.println("Already visited neighbor! This should not happen.");
                 continue;
