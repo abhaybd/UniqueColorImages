@@ -8,13 +8,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MainV1 {
+
+    private static final boolean FILL_GAPS = true;
 
     public static void main(String[] args) {
         try (Scanner in = new Scanner(System.in)) {
@@ -103,6 +107,54 @@ public class MainV1 {
                 }
             }
         }
+        if (FILL_GAPS) {
+            fillGaps();
+        }
+    }
+
+    private void fillGaps() {
+        trySaveAs("pre.png");
+        HashSet<VarColor> allColorSet = new HashSet<>();
+        for (int r = 0; r <= VarColor.getMask(); r++) {
+            for (int g = 0; g <= VarColor.getMask(); g++) {
+                for (int b = 0; b <= VarColor.getMask(); b++) {
+                    allColorSet.add(new VarColor(r, g, b));
+                }
+            }
+        }
+        List<VarColor> remainingColors = allColorSet.parallelStream().filter(e -> !usedColors.contains(e)).collect(Collectors.toList());
+        Collections.shuffle(remainingColors);
+        List<Coord> coordinates = new ArrayList<>(width * height - usedColors.size());
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (colorPane[row][col] == null) {
+                    coordinates.add(new Coord(row, col));
+                }
+            }
+        }
+        System.out.println("\nColors: " + remainingColors.size());
+        System.out.println("Coords: " + coordinates.size());
+
+        for (VarColor color : remainingColors) {
+            Coord coord = coordinates.parallelStream().min(Comparator.comparing(e -> findDist(color, e))).orElseThrow(IllegalStateException::new);
+            colorPane[coord.getRow()][coord.getCol()] = color;
+            coordinates.remove(coord);
+        }
+        trySaveAs("post.png");
+    }
+
+    private double findDist(VarColor color, Coord coord) {
+        List<Neighbor> neighbors = getNeighbors(coord.getRow(), coord.getCol(), null);
+        neighbors.removeIf(n -> !visitedTile(n.getRow(), n.getCol()));
+        double minDist = Double.POSITIVE_INFINITY;
+        for (Neighbor n : neighbors) {
+            VarColor nColor = colorPane[n.getRow()][n.getCol()];
+            double dist = Math.pow(nColor.getR() - color.getR(), 2) + Math.pow(nColor.getG() - color.getG(), 2) + Math.pow(nColor.getB() - color.getB(), 2);
+            if (dist < minDist) {
+                minDist = dist;
+            }
+        }
+        return minDist;
     }
 
     public void trySaveAs(String path) {

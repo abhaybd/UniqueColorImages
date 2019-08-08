@@ -24,7 +24,7 @@ public class VarColor {
         VarColor.numBits = numBits;
     }
 
-    private static int getMask() {
+    public static int getMask() {
         return (1 << numBits / 3) - 1;
     }
 
