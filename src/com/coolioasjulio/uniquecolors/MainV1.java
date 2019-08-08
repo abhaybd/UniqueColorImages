@@ -36,7 +36,6 @@ public class MainV1 {
     private VarColor[][] colorPane;
     private Set<VarColor> usedColors;
     private List<Neighbor> neighbors = new LinkedList<>();
-    private Set<Coord> visitedTiles;
     private Random r;
 
     public MainV1(int width, int height) {
@@ -44,18 +43,20 @@ public class MainV1 {
         this.height = height;
 
         colorPane = new VarColor[height][width];
-        visitedTiles = new HashSet<>();
         usedColors = new HashSet<>();
         r = new Random();
 
         int row = height / 2;
         int col = width / 2;
         System.out.printf("Start: row=%d,col=%d\n", row, col);
-        visitedTiles.add(new Coord(row, col));
         VarColor color = VarColor.randomColor();
         colorPane[row][col] = color;
         usedColors.add(color);
         neighbors.addAll(getNeighbors(row, col, color));
+    }
+
+    private boolean visitedTile(int row, int col) {
+        return colorPane[row][col] != null;
     }
 
     private List<Neighbor> getNeighbors(int row, int col, VarColor color) {
@@ -84,21 +85,22 @@ public class MainV1 {
                 System.out.printf("\rIter: % 7d, placed: % 6d", numIters, placed);
             }
             Neighbor n = neighbors.remove(0);
-            if (visitedTiles.contains(new Coord(n.getRow(), n.getCol()))) {
+            if (visitedTile(n.getRow(), n.getCol())) {
+                System.err.println("Already visited neighbor! This should not happen.");
                 continue;
             }
-            VarColor c = getColors(n);
+            VarColor c = getColor(n);
             if (c != null) {
                 placed++;
                 colorPane[n.getRow()][n.getCol()] = c;
                 usedColors.add(c);
-                visitedTiles.add(new Coord(n.getRow(), n.getCol()));
-                List<Neighbor> neighbors = getNeighbors(n.getRow(), n.getCol(), c);
-                neighbors.removeIf(e -> visitedTiles.contains(new Coord(e.getRow(), e.getCol())));
-                neighbors.removeAll(this.neighbors);
-                if (!neighbors.isEmpty()) {
-                    this.neighbors.addAll(neighbors);
-                    Collections.shuffle(this.neighbors);
+                List<Neighbor> localNeighbors = getNeighbors(n.getRow(), n.getCol(), c);
+                localNeighbors.removeIf(e -> visitedTile(e.getRow(), e.getCol()));
+                localNeighbors.removeAll(neighbors);
+
+                if (!localNeighbors.isEmpty()) {
+                    neighbors.addAll(localNeighbors);
+                    Collections.shuffle(neighbors);
                 }
             }
         }
@@ -128,7 +130,7 @@ public class MainV1 {
         return img;
     }
 
-    private VarColor getColors(Neighbor n) {
+    private VarColor getColor(Neighbor n) {
         List<VarColor> list = new ArrayList<>(Arrays.asList(n.getSeed().getNeighbors()));
         list.removeAll(usedColors);
         return list.isEmpty() ? null : list.get(r.nextInt(list.size()));

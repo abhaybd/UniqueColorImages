@@ -1,5 +1,7 @@
 package com.coolioasjulio.uniquecolors;
 
+import java.util.Objects;
+
 public class Neighbor {
     private int row, col;
     private VarColor seed;
@@ -20,5 +22,19 @@ public class Neighbor {
 
     public VarColor getSeed() {
         return seed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Neighbor neighbor = (Neighbor) o;
+        return row == neighbor.row &&
+                col == neighbor.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
     }
 }
