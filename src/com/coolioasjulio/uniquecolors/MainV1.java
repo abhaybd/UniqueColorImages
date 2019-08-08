@@ -1,7 +1,7 @@
 package com.coolioasjulio.uniquecolors;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,20 +12,24 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 
 public class MainV1 {
 
     public static void main(String[] args) {
-        int bits = 21;
-        VarColor.setNumBits(bits);
-        int size = (int) Math.ceil(Math.pow(2, bits / 2.0));
-        MainV1 pane = new MainV1(size, size);
-        long start = System.currentTimeMillis();
-        pane.generate();
-        long dt = System.currentTimeMillis() - start;
-        System.out.println("\nElapsed time: " + dt / 1000.0);
-        pane.trySaveAs(String.format("output-%d.png", bits));
+        try (Scanner in = new Scanner(System.in)) {
+            System.out.println("How many bits of color?");
+            int bits = in.nextInt();
+            VarColor.setNumBits(bits);
+            int size = (int) Math.ceil(Math.pow(2, bits / 2.0));
+            MainV1 pane = new MainV1(size, size);
+            long start = System.currentTimeMillis();
+            pane.generate();
+            long dt = System.currentTimeMillis() - start;
+            System.out.println("\nElapsed time: " + dt / 1000.0);
+            pane.trySaveAs(String.format("output-%d.png", bits));
+        }
     }
 
     private int width, height;

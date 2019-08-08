@@ -1,6 +1,6 @@
 package com.coolioasjulio.uniquecolors;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -72,10 +72,11 @@ public class VarColor {
                     if (dr == 0 && dg == 0 && db == 0) {
                         continue;
                     }
-                    try {
+                    int red = r + dr;
+                    int green = g + dg;
+                    int blue = b + db;
+                    if (validValue(red) && validValue(green) && validValue(blue)) {
                         neighbors.add(new VarColor(r + dr, g + dg, b + db));
-                    } catch (IllegalArgumentException e) {
-                        // empty
                     }
                 }
             }
