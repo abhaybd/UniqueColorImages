@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UniqueColors.iml" filepath="$PROJECT_DIR$/UniqueColors.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UniqueColorImages.iml" filepath="$PROJECT_DIR$/UniqueColorImages.iml" />
     </modules>
   </component>
 </project>
