@@ -28,6 +28,10 @@ public class VarColor {
         return (1 << numBits / 3) - 1;
     }
 
+    public static int getNumBits() {
+        return numBits;
+    }
+
     private int r, g, b;
 
     public VarColor(short rgb) {

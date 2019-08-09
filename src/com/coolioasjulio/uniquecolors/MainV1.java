@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class MainV1 {
 
-    private static final boolean FILL_GAPS = true;
+    private static final boolean FILL_GAPS = false;
 
     public static void main(String[] args) {
         try (Scanner in = new Scanner(System.in)) {
@@ -185,5 +186,42 @@ public class MainV1 {
         List<VarColor> list = new ArrayList<>(Arrays.asList(n.getSeed().getNeighbors()));
         list.removeAll(usedColors);
         return list.isEmpty() ? null : list.get(r.nextInt(list.size()));
+    }
+
+    public class Neighbor {
+        private int row, col;
+        private VarColor seed;
+
+        public Neighbor(int row, int col, VarColor seed) {
+            this.row = row;
+            this.col = col;
+            this.seed = seed;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public VarColor getSeed() {
+            return seed;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Neighbor neighbor = (Neighbor) o;
+            return row == neighbor.row &&
+                    col == neighbor.col;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(row, col);
+        }
     }
 }
